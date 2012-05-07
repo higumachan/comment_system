@@ -5,7 +5,16 @@ app = Flask(__name__);
 
 @app.before_request
 def before_request():
-    g.db = pymongo.Connection().test_comment;
+    f = open('/home/dotcloud/environment.json');
+    env = json.load(f);
+    g.conn = pymongo.Connection(env["DOTCLOUD_DATA_MONGODB_HOST"], int(env["DOTCLOUD_DATA_MONGODB_PORT"]));
+    g.conn.admin.authenticate(env['DOTCLOUD_DATA_MONGODB_LOGIN'], env['DOTCLOUD_DATA_MONGODB_PASSWORD']);
+    
+    g.db = g.conn.comment_db;
+
+@app.teardown_request
+def teardown_request(expention):
+    g.conn.close();
 
 @app.route("/")
 def index():
