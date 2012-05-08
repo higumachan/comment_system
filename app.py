@@ -14,7 +14,7 @@ def before_request():
 
 @app.teardown_request
 def teardown_request(expention):
-    g.conn.close();
+    pass;
 
 @app.route("/")
 def index():
@@ -39,7 +39,6 @@ def get_comment():
     for res in result:
         res["show"] = True;
         g.db.comments.save(res);
-    #g.db.comments.update({"show": False}, {"$set": {"show": True}}, False, True);
 
     return (json.dumps(list(result)));
 
